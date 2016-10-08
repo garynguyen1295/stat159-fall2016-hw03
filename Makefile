@@ -2,19 +2,22 @@
 
 all: report.pdf eda-output.txt regression.RData
 
-
+sgfsdfddsfsdf
 
 	 
 	
 report.pdf: report.Rmd
-	cd report; pandoc -f markdown -t pdf -s paper.md -o paper.html
+	cd report; pandoc -f markdown -t pdf -s report.md -o report.pdf
+
 
 eda-output.txt: eda-script.R Advertising.csv
 	cd data;  Rscript eda-script.R
 
-regression.RData: regression-script.R Advertising.csv
-	cd data; curl --remote-name http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv; cd .. 
+regression.RData: code/regression-script.R data/Advertising.csv 
+	Rscript code/regression-script.R data/Advertising.csv
 
 
 clean: 
 	cd report; rm -f report.pdf
+
+
