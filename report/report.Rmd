@@ -1,0 +1,90 @@
+---
+title: "Simple Regression Analysis"
+author: "Gary Thuc Nguyen"
+date: "October 7, 2016"
+output: 
+  html_document:
+    fig_height: 3
+    fig_width: 5
+---
+<!-- Don't edit in between this line and the one below -->
+```{r include=FALSE}
+# Don't delete this chunk if you are using the DataComputing package
+library(DataComputing)
+```
+*Source file* 
+```{r, results='asis', echo=FALSE}
+includeSourceDocuments()
+```
+<!-- Don't edit the material above this line -->
+
+# Abstract
+
+This report gives details on how to reproduce a simple regression analysis performed in Chapter 3 of the textbook "An introduction to Statistical Learning", particularly the analysis was performed on page 62, 68 and 69. 
+
+# Introduction
+
+Fitting a linear model is the objective of the analysis. The explonatory variable is "Sales", and the response variable is "TV". After we have produced a linear regression line running through the cluttered data points, the fit of that model will be assesed through different coefficients given in the Summaryof the regression model.
+
+# Data
+
+The data set we will be using is the csv file "Advertising.csv". The file consists of sales in 200 markets as there are 200 objects (rows) considered in the dataset. Specifically, we will examine the relatonship between Product Sales and advertising budgets for TV's
+
+# Methodology
+
+First, the linear model we use to fit onto the dataset and evaluate later is 
+
+$$Sales = \beta_0 + \beta_1TV$$
+
+The values needed to come up with the fitted linear model are beta coefficients. They will be estimated once the regression analysis is completed via the least squares criterion
+
+
+# Results
+
+We first display the Histogram of Sales and of TV Advertising budget, derived from the Advitising.csv file. 
+
+
+![Histogram of Sales](images/histogram-sales.png)  
+
+
+
+![Histogram of TV Advertising Budget](images/histogram-tv.png)  
+
+Next, we will make a Scatterplot of all observations in the dataset along with the fitted regression line going through the data clutter 
+
+![Scatterplot of all observations and fitted regression line](images/scatterplot-tv-sales.png)
+
+
+Visualizations displayed below are the results of the simple regression model fitted onto the Advertising data set.
+
+
+Fitting the model using the lm() function, a summary of the beta estimates and other statistics are shown below.
+
+Table 1: Information about Regression Coefficients
+
+Coefficients	Estimate	Std. Error	t-statistic	p-value
+Intercept	7.0325	0.4578	15.36	<0.0001
+TV	0.0475	0.0027	17.67	<0.0001
+The table below displays the quantities to assess the accuracy of the linear model fit to the training data.
+
+Table 2: Regression Quality Indices
+
+Quantity	Value
+Residual Standard Error	3.259
+R-squared	0.612
+F-statistic	312.1
+Conclusions
+
+The histograms of the TV and Sales variable does not provide much information about their association; however, a linear fit tells otherwise. Evaluating the variables' distribution, Sales and TV looks approximately normal and uniform, respectively.
+
+The scatterplot displays the Sales observations in 200 different markets in relation to TV advertising. The residual errors for each observation to the regression line are also shown by vertical line segments. From the data points alone, it is safe to assume the relationship to be linear, so a linear model fit is appropriate. A linear regression line is superimposed onto the scatterplot and the beta coefficients are generated via the least squares criterion. This linear fit seems to represent the relationship between the response and the predictor, but the variance of Sales variable might produce a high residual standard error and thus a low R-squared statistic.
+
+In table 1, both standard errors of each beta coefficient is small in comparison to their respective estimates. These relationships imply a large t-statistic and thus a low p-value. A p-value less than 0.0001 indicates that it is justified to reject the null hypotheses that each beta coefficient is equal to 0. This conclusion about $\beta_1$ means that TV advertising has a strong association to the quantity of Sales. More specifically, a $1000 increase in TV advertising corresponds to a 47.5 additional increase in Sales. For $\beta_0$, assuming that the budget ignores TV advertising (X = 0), the quantity of Sales will be equal to 7032 units by default.
+
+In table 2, the residual standard error (RSE) is the mean of the residual sum of squared errors for every observation. The lower RSE, the stronger the fit. However, if the RSE is too low, then the model might be a case of overfitting, so using this specific model for test data may lead to high RSEs. An RSE of 3.259 means that the linear model will, on average, have a prediction error of 3259 in Sales.
+
+The R-squared quantity is inversely related to the RSE; a low RSE coincides with a high R-squared statistic. A R-squared of 0.612 does not infer a strong fitting of the model, so a more flexible statisical learning method is recommended.
+
+The F-statistic tests the null hypothesis that all the beta coefficients have no association to the response variable Sales. A high F-statistic of 312.1 rejects the null hypothesis and suggests that at least one of the betas have an association to Sales, which is evident in the first table displaying the low p-values of the beta estimates.
+
+Based on the assessment quantities of RSE and R-squared, it is apt to suggest a different model to fit the Advertising data set. However, though not a proper fit, there is solid evidence of a strong association between TV and Sales. A low p-value for both the F-statistic and TV beta estimate confirms this statement.

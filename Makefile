@@ -1,3 +1,5 @@
+advertising_url = "http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv"
+
 .PHONY: all data clean
 
 all: report.pdf eda-output.txt regression.RData
@@ -12,7 +14,7 @@ regression.RData: code/regression-script.R data/Advertising.csv
 	Rscript code/regression-script.R data/Advertising.csv
 
 data: 
-	curl -o data/Advertising.csv $(http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv) 
+	curl -o data/Advertising.csv $(advertising_url) 
 
 clean: 
 	cd report; rm -f report.pdf
