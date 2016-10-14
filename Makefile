@@ -1,20 +1,27 @@
-advertising_url = "http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv"
+.PHONY: all data clean tests eda regression report
 
-.PHONY: all data clean
-
-all: report.pdf eda-output.txt regression.RData
-	
-report.pdf: report/report.Rmd data/regression.RData images/scatterplot-tv-sales.png
-	pandoc report/report.Rmd -s -o report/report.pdf
-
-eda-output.txt: code/eda-script.R data/Advertising.csv
-	Rscript code/eda-script.R data/Advertising.csv
-
-regression.RData: code/regression-script.R data/Advertising.csv 
-	Rscript code/regression-script.R data/Advertising.csv
+all: eda regression report
 
 data: 
-	curl -o data/Advertising.csv $(advertising_url) 
+	cd data; curl --remote-name http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv; cd ..
+
 
 clean: 
 	cd report; rm -f report.pdf
+
+tests:
+        cd code/ && Rscript "test-that.R"
+
+eda:
+	Rscript code/eda-script.R data/Advertising.csv
+
+regression:
+	Rscript code/regression-script.R data/Advertising.csv
+
+report: report/report.rmd data/regression.RData report/
+	R -e 'library("rmarkdown");library("xtable");rmarkdown::render("report/report.Rmd")'
+
+
+
+
+
