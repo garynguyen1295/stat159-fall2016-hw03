@@ -1,0 +1,12 @@
+sink(file = "../../session-info.txt")
+
+library(testthat)
+library(rmarkdown)
+library(xtable)
+library(stats)
+library(graphics)
+library(datasets)
+library(methods)
+library(base)
+sessionInfo()
+sink()
