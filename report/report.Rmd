@@ -1,12 +1,9 @@
 ---
-title: "Simple Regression Analysis"
+title: "Multiple Linear Regression Analysis"
 author: "Gary Thuc Nguyen"
-date: "October 7, 2016"
-output: 
-  html_document:
-    fig_height: 3
-    fig_width: 5
----
+date: "October 14, 2016"
+output: pdf_document
+    
 <!-- Don't edit in between this line and the one below -->
 ```{r include=FALSE}
 # Don't delete this chunk if you are using the DataComputing package
@@ -20,71 +17,125 @@ includeSourceDocuments()
 
 # Abstract
 
-This report gives details on how to reproduce a simple regression analysis performed in Chapter 3 of the textbook "An introduction to Statistical Learning", particularly the analysis was performed on page 62, 68 and 69. 
+This homework is to reproduce the analysis from Section 3.2 (pages 71 to 82), from the book "An Introduction to Statistical Learning" (by James et al). It includues multiple linear regressin with the predictor variables TV, Radio, Newspaper and the response variable Sales.
 
 # Introduction
 
-Fitting a linear model is the objective of the analysis. The explonatory variable is "Sales", and the response variable is "TV". After we have produced a linear regression line running through the cluttered data points, the fit of that model will be assesed through different coefficients given in the Summaryof the regression model.
+Fitting a linear model is the objective of the analysis. The explonatory variable is "Sales", and the response variable is "TV". After we have produced a linear regression line running through the cluttered data points, the fit of that model will be assesed through different coefficients given in the Summary of the regression model.
 
 # Data
 
-The data set we will be using is the csv file "Advertising.csv". The file consists of sales in 200 markets as there are 200 objects (rows) considered in the dataset. Specifically, we will examine the relatonship between Product Sales and advertising budgets for TV's
+The dataset Advertising.csv comes from "http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv It consists for TV, Radio, Newspaper and Sales columns. The structure of the columns are stored in numeric vectors.
+
+Advertising data set consists of Sales (in thousands of units) in 200 different markets, along with advertising budgets for the product in each of those markets for three different media: TV, radio, and newspaper. In this analysis, we will only look into the relationship between product Sales and TV advertising budgets, response and predictor variables respectively.
 
 # Methodology
 
-First, the linear model we use to fit onto the dataset and evaluate later is 
+In homework 2, the Simple Linear Model that is used to evaluate the association between Sales and TV:
 
-$$Sales = \beta_0 + \beta_1TV$$
+$$ \hat{Sales} = \hat{\beta_0} + \hat{\beta_1} \times TV $$
 
-The values needed to come up with the fitted linear model are beta coefficients. They will be estimated once the regression analysis is completed via the least squares criterion
+Using the least squares criterion, estimates of the beta coefficients are calculated to form a fitted regression line from the given n = 200 observations.
 
+For multiple linear regression:
+
+$$Sales = \beta_{0}+\beta_{1} * TV + \beta_{2}*Radio + \beta_{3}*Newspaper$$
+
+Multiple Linear regression is useful for Advertising data becasue it can determined the relationship between sales and the three types of advertising. We can compare which type of advertisement is more effective and has a stronger association with sales. 
+
+### Estimating the Regression Coefficients
+Using the formula below, we estimate the regression coefficients:
+
+$$\hat{y} = \hat{\beta_0} + \hat{\beta_1}  X_1 + \hat{\beta_2} X_2 ... + \hat{\beta_p}  X_p$$
+
+Then we minimize the sum of squared residuals:
+
+$$ RSS = \sum_{i=1}^n\left(y_i-\hat{y_i}\right)^2 = \sum_{i=1}^n\left(y_i - \hat{\beta}_0 - \hat{\beta_1}x_{i1} - \hat{\beta_2}x_{i2} - ... - \hat{\beta_p} x_{ip}\right)^2 $$
+
+### F-statisitc
+
+ We test the null hypothesis to estimate regression coefficients:
+
+$$H_0 = \beta_1 = \beta_2 = ... = \beta_p = 0$$
+
+versus the alternative : $H_a$: at least one $\beta_j$ is non-zero.
+
+ *F-statistic* is computed below:
+
+$$F = \frac{(TSS - RSS)/p}{RSS/(n-p-1)}$$
+
+When there is no relationship between the response and predictors, the F-statistics will be close to 1. On the other hand, if $H_a$ is true, we expect `F` to be greater than 1. 
 
 # Results
 
-We first display the Histogram of Sales and of TV Advertising budget, derived from the Advitising.csv file. 
+Plot of Least Squares for simple regression 
+between TV and Sales
+
+![scatter plot with fitted regression line](../images/scatterplot-tv-sales.png)
+
+The 3 tables give us information about how fit linear models are for Sales vs. TV, Sales vs. Radio, Sales vs. Newspaper
+
+```{r xtable, results = 'asis',warning=FALSE, message=FALSE, echo=FALSE, comment = FALSE}
+load("../data/regression.RData")
+library(xtable)
+# table 1:
+print(xtable(summary(reg_TV)$coef, caption = "Simple regression of Sales on TV", type = "Latex"),comment = FALSE)
+# table 2:
+print(xtable(summary(reg_Radio)$coef, caption = "Simple regression of Sales on Radio", type = "Latex"), comment = FALSE)
+# table 3:
+print(xtable(summary(reg_Newspaper)$coef, caption = "Simple regression of Sales on Newspaper", type = "Latex"), comment = FALSE)
+```
+
+Table 1 displays the simple linear regression fit to the `Advertising` data, where $\hat{\beta_0}$ = `r reg_TV$coefficients[[1]]` and $\hat{\beta_1}$ = `r reg_TV$coefficients[[2]]`. 
+
+With $1000 increase in TV advertisement, there will be an increase in sales by 50 units. 
+ 
+
+Table 2 displays the simple regression of `Sales` on `Radio`, where $\hat{\beta_0}$ = `r reg_Radio$coefficients[[1]]` and $\hat{\beta_1}$ = `r reg_Radio$coefficients[[2]]`. We find that a $1,000 increase in spending on radio advertising is associated with an increase in sales by around `r round(reg_Radio$coefficients[[2]]*1000,1)` units. 
+
+With $1000 increase in Radio advertisement, there will be an increase in sales by 200 units. 
 
 
-![Histogram of Sales](images/histogram-sales.png)  
+Table 3 contains the least squares coefficients for a simple linear regression of slaes onto `Newspaper` advertising budget, where $\hat{\beta_0}$ = `r reg_Newspaper$coefficients[[1]]` and $\hat{\beta_1}$ = `r reg_Newspaper$coefficients[[2]]`. A $1,000 increase in newspaper advertising budget is associated with an increase in sales by approximately `r round(reg_Newspaper$coefficients[[2]]*1000,1)` units.
+
+With $1000 increase in Newspaper advertisement, there will be an increase in sales by 50 units. 
 
 
+```{r, results = 'asis',warning=FALSE, message=FALSE, echo=FALSE, comment = FALSE}
+load("../data/regression.RData")
+load("../data/correlation-matrix.RData")
 
-![Histogram of TV Advertising Budget](images/histogram-tv.png)  
+# table 4
+print(xtable(summary(reg_multi)$coef, caption = "Coefficient estimates of the least squares model", type = "Latex"), comment = FALSE)
+```
 
-Next, we will make a Scatterplot of all observations in the dataset along with the fitted regression line going through the data clutter 
+By using multiple linear regression, we can see how other predictors changed the sales. From Table 4, we can see that there will be approximately 50 units increase in sales with $1000 budget. Radio still have a better effect of increase in 190 units in sales. However, newspaper has a decrease in sales. Thus, we can concluded that radio advertisement is more effective, while newspaper plays a less importatnt role in terms of affect sales. Both TV and radio have low p-values, which means there is a relationship between sales with TV and radio. Newspaper has 0.86 p-value, which means there is no relationship between Newspaper and Sales. 
 
-![Scatterplot of all observations and fitted regression line](images/scatterplot-tv-sales.png)
+```{r, results = 'asis',warning=FALSE, message=FALSE, echo=FALSE, comment = FALSE}
+# table 5:
+corm_eda[lower.tri(corm_Advertising)] <- NA
+print(xtable(corm_Advertising, caption = "Correlation matrix for TV, radio, newspaper, and sales for the Advertising data", type = "Latex"), comment = FALSE)
+
+```
 
 
-Visualizations displayed below are the results of the simple regression model fitted onto the Advertising data set.
+From Table 5, we can first examined R squared, which is .90. This means the data is a good fit to the regression line. The F-statistics is high, which mean at least one advertisement has a correlation with Sales.
+
+```{r,results = 'asis',warning=FALSE, message=FALSE, echo=FALSE, comment = FALSE}
+source("../code/functions/regression-functions.R")
+#table 6: 
+f = round(F_statistic(reg_multi),1)
+rse = round(Residual_ss(reg_multi),2)
+r2 = round(R_squared(reg_multi),3)
+c = c("Residual standard error","R2", "F-statistic")
+v = c(rse,r2,f)
+qq = data.frame(c,v)
+colnames(qq) <- c("Quantity","Value")
+print(xtable(qq, type = "html", caption = "Regression Quality Indices: regression of Sales on TV, radio and nespaper"),comment = FALSE, include.rownames = FALSE)
+```
 
 
-Fitting the model using the lm() function, a summary of the beta estimates and other statistics are shown below.
+#Conclusions
+From the first three tables of single linear regression model, we find that TV and newspaper advertissment have approximately the same outcome for sales. The major difference is radio advertisement and the marketing team should consider spend more budget on it. 
+By examining the high f-statistics, we can tell that at least one of the predictors useful in predicting the response. The multiple regression model show us that TV and Radio are useful to explain the increase of sales. From the coefficients in the multiple linear regression model, we can see that Radio has the highest effect to increase sales. Newspaper has a negative coefficient and high p-value, which mean there is no relationship between newspaper and sales. The high R squares shows that the model is a good fit to the data; thus, the prediction will be quite accurate. 
 
-Table 1: Information about Regression Coefficients
-
-Coefficients	Estimate	Std. Error	t-statistic	p-value
-Intercept	7.0325	0.4578	15.36	<0.0001
-TV	0.0475	0.0027	17.67	<0.0001
-The table below displays the quantities to assess the accuracy of the linear model fit to the training data.
-
-Table 2: Regression Quality Indices
-
-Quantity	Value
-Residual Standard Error	3.259
-R-squared	0.612
-F-statistic	312.1
-Conclusions
-
-The histograms of the TV and Sales variable does not provide much information about their association; however, a linear fit tells otherwise. Evaluating the variables' distribution, Sales and TV looks approximately normal and uniform, respectively.
-
-The scatterplot displays the Sales observations in 200 different markets in relation to TV advertising. The residual errors for each observation to the regression line are also shown by vertical line segments. From the data points alone, it is safe to assume the relationship to be linear, so a linear model fit is appropriate. A linear regression line is superimposed onto the scatterplot and the beta coefficients are generated via the least squares criterion. This linear fit seems to represent the relationship between the response and the predictor, but the variance of Sales variable might produce a high residual standard error and thus a low R-squared statistic.
-
-In table 1, both standard errors of each beta coefficient is small in comparison to their respective estimates. These relationships imply a large t-statistic and thus a low p-value. A p-value less than 0.0001 indicates that it is justified to reject the null hypotheses that each beta coefficient is equal to 0. This conclusion about $\beta_1$ means that TV advertising has a strong association to the quantity of Sales. More specifically, a $1000 increase in TV advertising corresponds to a 47.5 additional increase in Sales. For $\beta_0$, assuming that the budget ignores TV advertising (X = 0), the quantity of Sales will be equal to 7032 units by default.
-
-In table 2, the residual standard error (RSE) is the mean of the residual sum of squared errors for every observation. The lower RSE, the stronger the fit. However, if the RSE is too low, then the model might be a case of overfitting, so using this specific model for test data may lead to high RSEs. An RSE of 3.259 means that the linear model will, on average, have a prediction error of 3259 in Sales.
-
-The R-squared quantity is inversely related to the RSE; a low RSE coincides with a high R-squared statistic. A R-squared of 0.612 does not infer a strong fitting of the model, so a more flexible statisical learning method is recommended.
-
-The F-statistic tests the null hypothesis that all the beta coefficients have no association to the response variable Sales. A high F-statistic of 312.1 rejects the null hypothesis and suggests that at least one of the betas have an association to Sales, which is evident in the first table displaying the low p-values of the beta estimates.
-
-Based on the assessment quantities of RSE and R-squared, it is apt to suggest a different model to fit the Advertising data set. However, though not a proper fit, there is solid evidence of a strong association between TV and Sales. A low p-value for both the F-statistic and TV beta estimate confirms this statement.
