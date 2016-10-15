@@ -3,7 +3,7 @@
 #clearly labeled, and will be saved in a file eda-output.txt. The charts are saved
 #in PNG format
 
-Advertising_data <- read.csv("Advertising.csv", header = TRUE)
+Advertising_data <- read.csv('../../data/Advertising.csv', header = TRUE)
 Advertising_data = Advertising_data[,-1]
 # summary statistics of TV,  Histogram of TV
 summary_TV <- summary(Advertising_data$TV)
@@ -50,7 +50,7 @@ dev.off()
 
 
 ##histogram-newspaper.png
-pdf(file = "../../images/histogram-tv.pdf")
+pdf(file = "../../images/histogram-Newspaper.png")
 hist(Advertising_data$Newspaper, main = "Histogram of Newspaper")
 dev.off()
 
