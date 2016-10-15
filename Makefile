@@ -1,27 +1,34 @@
-.PHONY: all data clean tests eda regression report
+dataset = data/Advertising.csv
 
-all: eda regression report
+#declare phony targets
+.PHONY: all data clean eda regression report tests session-info
 
-data: 
-	cd data; curl --remote-name http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv; cd ..
+all: eda regression report session-info
 
+#import data into the data folder
+data:
+	curl "http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv" > $(dataset)
 
-clean: 
-	cd report; rm -f report.pdf
+#Run Rscript to test the regression script
+tests: code/test-that.R
+	Rscript code/test-that.R
 
-tests:
-        cd code/ && Rscript "test-that.R"
+#Run eda-script to generate images and summary statistics
+eda: code/scripts/eda-script.R $(dataset)
+	Rscript code/scripts/eda-script.R
 
-eda:
-	Rscript code/eda-script.R data/Advertising.csv
+#Run multiple regression 
+regression: 
+	Rscript code/scripts/regression-script.R
 
-regression:
-	Rscript code/regression-script.R data/Advertising.csv
+#Save session info information
+session-info: code/scripts/session-info-script.R
+	Rscript code/scripts/session-info-script.R
+	
+#Generate pdf report
+report: report/report.Rmd
+	Rscript -e 'library(rmarkdown); render("report/report.Rmd")'
 
-report: report/report.rmd data/regression.RData report/
-	R -e 'library("rmarkdown");library("xtable");rmarkdown::render("report/report.Rmd")'
-
-
-
-
-
+#clean the target
+clean:
+	rm -f report/report.pdf 
