@@ -54,6 +54,12 @@ pdf(file = "../../images/histogram-Newspaper.png")
 hist(Advertising_data$Newspaper, main = "Histogram of Newspaper")
 dev.off()
 
+#Generate pair-wise scatterplots, disected by 4 objects (TV, Radio, Newspaper, Sales)
+
+png(file = "../../images/scatterplot-matrix.png")
+pairs(Advertising_data)
+dev.off()
+
 ##Using sink
 sink(file = "../../data/eda-output.txt")
 cat("TV summary statistics\n\n")
