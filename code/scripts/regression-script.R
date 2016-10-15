@@ -5,11 +5,9 @@
 #The R objects from the regression analysis are saved in the file regression.RData.
 #In turn, the scatterplot is saved in both PNG and PDF formats.
 
-## Setting up working directory 
-setwd(file.path(getwd()))
 
 ## 
-Advertising_data <- read.csv("Advertising.csv", header = TRUE)
+Advertising_data <- read.csv('../../data/Advertising.csv', header = TRUE)
 Advertising_data = Advertising_data[,-1]
 
 reg_TV= lm(Advertising_data$Sales ~ Advertising_data$TV)
@@ -18,17 +16,17 @@ reg_Newspaper = lm(Advertising_data$Sales~Advertising_data$Newspaper)
 reg_multi = lm(Sales~TV + Radio + Newspaper, data = Advertising_data)
 
 
-#Using save function 
+#Using save function to create regression.RData 
 save(reg_TV,reg_Radio,reg_Newspaper,reg_multi, file = '../../data/regression.RData')
 
 
 # create the scatterplot-tv-sales.png
 png(file = "../../images/scatterplot-tv-sales.png",width=8,height=6,units="in",res=100)
 
-
-
 plot(Advertising_data$TV, Advertising_data$Sales, pch = 20, col = "deeppink3", ylab = "Sales", xlab = "TV", main = "Regression of Sales onto TV")
+
 abline(lm(Advertising_data$Sales ~ Advertising_data$TV), lwd = 2)
+
 dev.off()
 
 
@@ -62,9 +60,6 @@ dev.off()
 png(file = "../../images/scale-location-plot.png")
 plot(reg_multi, 3)
 dev.off()
-
-
-
 
 
 
